@@ -42,6 +42,7 @@ Capistrano::Configuration.instance.load do
 
   # Load from config
   set :wordpress_version, WPConfig.wordpress.version
+  set :wordpress_git_url, WPConfig.wordpress.repository
   set :application, WPConfig.application.name
   set :repository, WPConfig.application.repository
 
@@ -52,7 +53,6 @@ Capistrano::Configuration.instance.load do
   set :git_shallow_clone, 1
   set :git_enable_submodules, 1
   set :wordpress_db_host, "localhost"
-  set :wordpress_git_url, "git@git.private.thedextrousweb.com:wordpress/wordpress.git"
   set :wordpress_auth_key, Digest::SHA1.hexdigest(rand.to_s)
   set :wordpress_secure_auth_key, Digest::SHA1.hexdigest(rand.to_s)
   set :wordpress_logged_in_key, Digest::SHA1.hexdigest(rand.to_s)
@@ -178,8 +178,9 @@ Capistrano::Configuration.instance.load do
     desc "Checks out a copy of wordpress to a shared location"
     task :checkout do
       run "rm -rf #{shared_path}/wordpress || true"
+      raise Exception, 'wordpress.repository must be set in config.yml' if wordpress_git_url.nil?
       run "git clone --depth 1 #{wordpress_git_url} #{shared_path}/wordpress"
-      run "cd #{shared_path}/wordpress && git fetch --tags && git checkout v#{wordpress_version}"
+      run "cd #{shared_path}/wordpress && git fetch --tags && git checkout #{wordpress_version}"
     end
 
     desc "Sets up wp-config.php"
