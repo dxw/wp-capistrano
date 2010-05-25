@@ -43,7 +43,6 @@ Capistrano::Configuration.instance.load do
   # Load from config
   set :wordpress_version, WPConfig.wordpress.version
   set :wordpress_git_url, WPConfig.wordpress.repository
-  set :application, WPConfig.application.name
   set :repository, WPConfig.application.repository
 
   # Everything else
@@ -96,12 +95,7 @@ Capistrano::Configuration.instance.load do
       # Git 1.5-compatability:
       run "cd #{latest_release} && DIR=`pwd` && for D in `grep '^\\[submodule' .git/config | cut -d\\\" -f2`; do cd $DIR/$D && git submodule init && git submodule update; done"
 
-      system("cd themes/#{application}/style && php sass_output.php > sass_output.css")
-      top.upload("themes/#{application}/style/sass_output.css", "#{latest_release}/themes/#{application}/style/" , :via => :scp)
-
       run <<-CMD
-        sed -i 's/\.php/\.css/' #{latest_release}/themes/#{application}/style.css &&
-
         mkdir -p #{latest_release}/finalized &&
         cp -rv   #{shared_path}/wordpress/*     #{latest_release}/finalized/ &&
         cp -rv   #{shared_path}/wp-config.php   #{latest_release}/finalized/wp-config.php &&

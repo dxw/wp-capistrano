@@ -1,6 +1,5 @@
 --- 
 application:
-  name: "app"
   repository: "git@github.com:user/repo.git"
 wordpress:
   repository: "git://github.com/dxw/wordpress.git"
