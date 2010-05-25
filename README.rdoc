@@ -1,0 +1,51 @@
+= wp-capistrano
+
+== Usage
+
+A sample Capfile and config.yml exist in lib/wp_generate/templates/capify.
+
+Those should be copied into wp-content/Capfile and wp-content/lib/config.yml respectively. Things you'll need to change in config.yml include:
+
+- application.repository -> set that to the repository that includes the contents of wp-content
+- wordpress.repository -> in the sample this is set to our mirror on GitHub, but you may prefer to mirror that locally or set up your own
+- wordpress.version -> a git tree-ish, which can be a branch name, tag, or a commit hash (e.g. v2.9.2)
+- deploy.* -> these names are used when doing cap deploy when deploying to non-default environments (i.e. cap production deploy)
+- deploy.*.ssh_user -> the user who will log into the machine, if omitted will use the default
+- deploy.*.ssh_domain -> the host to be SSHed into
+- deploy.*.path -> the path on the remote machine
+- deploy.*.vhost -> the intended host name when being viewed on the remote machine
+- deploy.*.database.*
+
+For the initial run, you should first create the directory specified in deploy.*.path on the server, or at least make sure it's possible for the deploy user to create it, then run:
+
+ cap setup:wordpress
+
+This will create the Capistrano structure, check out the specified version of WordPress, create a shared directory full of things like wp-config.php and uploads. Now go and edit wp-config.php on the server, unless you specified the database password in config.yml. Then to deploy your wp-content, run:
+
+ cap deploy
+
+If you've set up Apache correctly (a .htaccess will be created, but that's all the help it will give you), you can visit the vhost you specified and everything should be working.
+
+When you update things, don't forget to push wp-content (and any submodules), and:
+
+ cap deploy
+
+And to setup/deploy to hosts other than the default, use:
+
+ cap staging deploy
+ cap production deploy
+
+== wp-generate
+
+wp-capistrano can be used with wp-generate by doing the following:
+
+ gem install wp-generate
+ cd wp-content
+ wp-generate capify
+
+Which creates Capfile and lib/config.yml.
+
+== Credits
+
+Code originally adapted from:
+http://github.com/jestro/wordpress-capistrano
