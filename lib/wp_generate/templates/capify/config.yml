@@ -1,0 +1,41 @@
+--- 
+application:
+  name: "app"
+  repository: "git@github.com:user/repo.git"
+wordpress:
+  version: "2.9.2"
+deploy:
+  testing:
+    default: true
+    use_sudo: false
+    ssh_user: deploy
+    ssh_domain: "example.com"
+    path: "/var/vhosts/example.com/testing/app"
+    vhost: "app.testing.example.com"
+    database:
+      name: "app_testing"
+      user: "app_testing"
+      password: ""
+      host: "localhost"
+  staging:
+    use_sudo: false
+    ssh_user: deploy
+    ssh_domain: "example.com"
+    path: "/var/vhosts/example.com/staging/app"
+    vhost: "app.staging.example.com"
+    database:
+      name: "app_staging"
+      user: "app_staging"
+      password: ""
+      host: "localhost"
+  production:
+    use_sudo: false
+    ssh_user: deploy
+    ssh_domain: "example.com"
+    path: "/var/vhosts/example.com/production/app"
+    vhost: "app.com"
+    database:
+      name: "app_production"
+      user: "app_production"
+      password: ""
+      host: "localhost"
