@@ -1,5 +1,7 @@
 = wp-capistrano
 
+Capistrano receipe for WordPress
+
 == Usage
 
 A sample Capfile and config.yml exist in lib/wp_generate/templates/capify.

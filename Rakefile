@@ -4,7 +4,7 @@ begin
   require 'jeweler'
   Jeweler::Tasks.new do |gem|
     gem.name = "wp-capistrano"
-    gem.summary = %Q{Capistrano receipe bits for WordPress}
+    gem.summary = %Q{Capistrano receipe for WordPress}
     gem.description = %Q{}
     gem.email = "tom@thedextrousweb.com"
     gem.homepage = "http://github.com/dxw/wp-capistrano"
