@@ -2,6 +2,7 @@ require 'wp_config'
 require 'erb'
 require 'digest'
 require 'digest/sha1'
+
 Capistrano::Configuration.instance.load do
   default_run_options[:pty] = true
 
@@ -95,14 +96,7 @@ Capistrano::Configuration.instance.load do
       # Git 1.5-compatability:
       run "cd #{latest_release} && DIR=`pwd` && for D in `grep '^\\[submodule' .git/config | cut -d\\\" -f2`; do cd $DIR/$D && git submodule init && git submodule update; done"
 
-      # SASS
-      Dir.glob("themes/*/*/sass_output.php").map {|d| d.match(%r&/([^/]+)/([^/]+)/sass_output.php$&)[1,2]}[0..0].each do |theme_dir,sass_dir|
-        p theme_dir
-        p sass_dir
-        system("cd themes/#{theme_dir}/#{sass_dir} && php sass_output.php > sass_output.css")
-        top.upload("themes/#{theme_dir}/#{sass_dir}/sass_output.css", "#{latest_release}/themes/#{theme_dir}/#{sass_dir}/" , :via => :scp)
-        run("sed -i 's/\.php/\.css/' #{latest_release}/themes/#{theme_dir}/style.css")
-      end
+      deploy.sass
 
       run <<-CMD
         mkdir -p #{latest_release}/finalized &&
@@ -119,6 +113,16 @@ Capistrano::Configuration.instance.load do
         chmod -R 777 #{latest_release}/finalized/wp-content/cache/ ;
         true
       CMD
+    end
+
+    task :sass do
+      Dir.glob("themes/*/*/sass_output.php").map {|d| d.match(%r&/([^/]+)/([^/]+)/sass_output.php$&)[1,2]}[0..0].each do |theme_dir,sass_dir|
+        p theme_dir
+        p sass_dir
+        system("cd themes/#{theme_dir}/#{sass_dir} && php sass_output.php > sass_output.css")
+        top.upload("themes/#{theme_dir}/#{sass_dir}/sass_output.css", "#{latest_release}/themes/#{theme_dir}/#{sass_dir}/" , :via => :scp)
+        run("sed -i 's/\.php/\.css/' #{latest_release}/themes/#{theme_dir}/style.css")
+      end
     end
 
     task :symlink, :except => { :no_release => true } do
