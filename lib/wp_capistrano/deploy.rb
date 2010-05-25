@@ -163,12 +163,18 @@ Capistrano::Configuration.instance.load do
 
     desc "Creates uploads dir"
     task :uploads do
+      chmod = true
       if File.exist? 'uploads'
-        upload("uploads", shared_path, :recursive => true, :via => :scp)
+        begin
+          upload("uploads", shared_path, :recursive => true, :via => :scp)
+        rescue
+          STDERR.puts '*** uploads dir already exists and does not belong to us. Not re-uploading.'
+          chmod = false
+        end
       else
         run "mkdir -p #{shared_path}/uploads"
       end
-      run "chmod -R 777 #{shared_path}/uploads && rm -rf #{shared_path}/uploads/.git"
+      run "chmod -R 777 #{shared_path}/uploads" if chmod
     end
 
   end
