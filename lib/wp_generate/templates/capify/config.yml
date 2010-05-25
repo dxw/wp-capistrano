@@ -7,7 +7,6 @@ wordpress:
 deploy:
   testing:
     default: true
-    use_sudo: false
     ssh_user: deploy
     ssh_domain: "example.com"
     path: "/var/vhosts/example.com/testing/app"
@@ -18,7 +17,6 @@ deploy:
       password: ""
       host: "localhost"
   staging:
-    use_sudo: false
     ssh_user: deploy
     ssh_domain: "example.com"
     path: "/var/vhosts/example.com/staging/app"
@@ -29,7 +27,6 @@ deploy:
       password: ""
       host: "localhost"
   production:
-    use_sudo: false
     ssh_user: deploy
     ssh_domain: "example.com"
     path: "/var/vhosts/example.com/production/app"
