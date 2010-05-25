@@ -35,6 +35,14 @@ And to setup/deploy to hosts other than the default, use:
  cap staging deploy
  cap production deploy
 
+== Additional features
+
+=== SASS
+
+If there exists wp-content/themes/*/*/sass_output.php it will be executed (from that directory) and its contents will be placed in sass_output.css. Then ../style.css will be sedded to s/\.php/\.css/, and both will be uploaded to the appropriate places.
+
+sass_output.php can be found in wp-generate's theme generator. It is very handy for development, but less server load is more good, so we "cache" it in this way.
+
 == wp-generate
 
 wp-capistrano can be used with wp-generate by doing the following:
