@@ -30,12 +30,14 @@ Capistrano::Configuration.instance.load do
 
     desc "Creates the DB, and loads the dump"
     task :mysql do
-      upload("data/dump.sql.gz", shared_path, :via => :scp)
-      run <<-CMD
-        test #{wordpress_db_name}X != `echo 'show databases' | mysql -u root | grep '^#{wordpress_db_name}$'`X &&
-        echo 'create database if not exists `#{wordpress_db_name}`' | mysql -u root &&
-        zcat #{shared_path}/dump.sql.gz | sed 's/localhost/#{wordpress_domain}/g' | mysql -u root #{wordpress_db_name} || true
-      CMD
+      if File.exist? 'data/dump.sql.gz'
+        upload("data/dump.sql.gz", shared_path, :via => :scp)
+        run <<-CMD
+        test #{wordpress_db_name}X != `echo 'show databases' | mysql | grep '^#{wordpress_db_name}$'`X &&
+        echo 'create database if not exists `#{wordpress_db_name}`' | mysql &&
+        zcat #{shared_path}/dump.sql.gz | sed 's/localhost/#{wordpress_domain}/g' | mysql #{wordpress_db_name} || true
+        CMD
+      end
     end
 
   end
