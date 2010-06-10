@@ -1,6 +1,11 @@
 Capistrano::Configuration.instance.load do
   namespace :setup do
 
+    desc "Alias for wordpress"
+    task :default do
+      setup.wordpress
+    end
+
     desc "Setup this server for a new wordpress site."
     task :wordpress do
       "mkdir -p #{deploy_to}"
