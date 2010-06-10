@@ -31,6 +31,36 @@ Capistrano::Configuration.instance.load do
         chmod -R 777 #{latest_release}/finalized/wp-content/cache/ ;
         true
       CMD
+
+      ## WP Super Cache
+
+      if deploy_profile.modules.include? 'wp-super-cache'
+
+        if File.exist? 'plugins/wp-super-cache/advanced-cache.php'
+          top.upload("plugins/wp-super-cache/advanced-cache.php", "#{latest_release}/finalized/wp-content/" , :via => :scp)
+          sedable_path = "#{latest_release}/finalized/wp-content/plugins/wp-super-cache/".gsub(/\//,'\/')
+          run("sed -i 's/CACHEHOME/#{sedable_path}/g' #{latest_release}/finalized/wp-content/advanced-cache.php")
+        else
+          raise IOError, 'Are you sure you have the WP Super Cache plugin?'
+        end
+
+        if File.exist? 'wp-cache-config.php'
+          top.upload("wp-cache-config.php", "#{latest_release}/finalized/wp-content/" , :via => :scp)
+        elsif File.exist? 'plugins/wp-super-cache/wp-cache-config-sample.php'
+          top.upload("plugins/wp-super-cache/wp-cache-config-sample.php", "#{latest_release}/finalized/wp-content/wp-cache-config.php" , :via => :scp)
+        else
+          raise IOError, 'Are you sure you have the WP Super Cache plugin?'
+        end
+
+        #TODO
+        top.upload("htaccess", "#{latest_release}/finalized/.htaccess" , :via => :scp)
+
+        run("mkdir -p #{latest_release}/finalized/wp-content/cache/blogs &&
+         mkdir -p #{latest_release}/finalized/wp-content/cache/meta &&
+         chmod -R 777 #{latest_release}/finalized/wp-content/cache &&
+         chmod -R 777 #{latest_release}/finalized/wp-content/wp-cache-config.php")
+
+      end
     end
 
     desc "Compile SASS locally and upload it"
