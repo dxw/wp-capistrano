@@ -18,11 +18,15 @@ Capistrano::Configuration.instance.load do
       set :user, t.ssh_user
       set :deploy_to, t.path
       set :wordpress_domain, t.vhost
+      set :wordpress_domain, 'localhost' if wordpress_domain.nil?
       set :wordpress_db_name, t.database.name
       set :wordpress_db_user, t.database.user
+      set :wordpress_db_user, 'root' if wordpress_db_user.nil?
       set :wordpress_db_password, t.database.password
       set :wordpress_db_host, t.database.host
+      set :wordpress_db_host, 'localhost' if wordpress_db_host.nil?
       set :use_sudo, t.use_sudo
+      set :deploy_profile, t
 
       @roles = {}
       role :app, domain
