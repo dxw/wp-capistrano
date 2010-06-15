@@ -53,7 +53,9 @@ Capistrano::Configuration.instance.load do
         end
 
         #TODO
-        top.upload("htaccess", "#{latest_release}/finalized/.htaccess" , :via => :scp)
+        if File.exist? 'htaccess'
+          top.upload("htaccess", "#{latest_release}/finalized/.htaccess" , :via => :scp)
+        end
 
         run("mkdir -p #{latest_release}/finalized/wp-content/cache/blogs &&
          mkdir -p #{latest_release}/finalized/wp-content/cache/meta &&
