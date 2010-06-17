@@ -34,7 +34,7 @@ Capistrano::Configuration.instance.load do
 
       ## WP Super Cache
 
-      if deploy_profile.modules.include? 'wp-super-cache'
+      if deploy_profile.modules and deploy_profile.modules.include? 'wp-super-cache'
 
         if File.exist? 'plugins/wp-super-cache/advanced-cache.php'
           top.upload("plugins/wp-super-cache/advanced-cache.php", "#{latest_release}/finalized/wp-content/" , :via => :scp)
