@@ -19,18 +19,35 @@ Capistrano::Configuration.instance.load do
 
     desc "Creates uploads dir"
     task :uploads do
-      chmod = true
-      if File.exist? 'uploads'
-        begin
-          upload("uploads", shared_path, :recursive => true, :via => :scp)
-        rescue
-          STDERR.puts '*** uploads dir already exists and does not belong to us. Not re-uploading.'
-          chmod = false
+
+      stop = false
+
+      # If it already exists, stop
+      run("ls -d #{shared_path}/uploads") do |channel,stream,data|
+        if data.strip=="#{shared_path}/uploads"
+          STDERR.puts '*** uploads dir already exists. Not re-uploading.'
+          stop = true
         end
-      else
-        run "mkdir -p #{shared_path}/uploads"
       end
-      run "chmod -R 777 #{shared_path}/uploads" if chmod
+
+      unless stop
+        # If we have it, upload it
+        if File.exist?('uploads')
+          begin
+            upload("uploads", shared_path, :recursive => true, :via => :scp)
+          rescue
+            STDERR.puts '*** uploads dir already exists and does not belong to us. Can\'t re-upload.'
+            stop = true
+          end
+        else
+          run "mkdir -p #{shared_path}/uploads"
+        end
+
+        unless stop
+          # Let our Web server write to it
+          run "chmod -R 777 #{shared_path}/uploads"
+        end
+      end
     end
 
     desc "Creates the DB, and loads the dump"
