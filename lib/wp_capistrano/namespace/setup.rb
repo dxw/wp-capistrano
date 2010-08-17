@@ -23,7 +23,7 @@ Capistrano::Configuration.instance.load do
       stop = false
 
       # If it already exists, stop
-      run("ls -d #{shared_path}/uploads") do |channel,stream,data|
+      run("ls -d #{shared_path}/uploads ; true") do |channel,stream,data|
         if data.strip=="#{shared_path}/uploads"
           STDERR.puts '*** uploads dir already exists. Not re-uploading.'
           stop = true
