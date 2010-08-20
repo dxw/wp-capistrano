@@ -27,6 +27,7 @@ Capistrano::Configuration.instance.load do
       set :wordpress_db_host, 'localhost' if wordpress_db_host.nil?
       set :use_sudo, t.use_sudo
       set :deploy_profile, t
+      deploy_profile.modules = [] unless deploy_profile.modules
 
       @roles = {}
       role :app, domain

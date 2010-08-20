@@ -34,7 +34,7 @@ Capistrano::Configuration.instance.load do
 
       ## WP Super Cache
 
-      if deploy_profile.modules and deploy_profile.modules.include? 'wp-super-cache'
+      if deploy_profile.modules.include? 'wp-super-cache'
 
         if File.exist? 'plugins/wp-super-cache/advanced-cache.php'
           top.upload("plugins/wp-super-cache/advanced-cache.php", "#{latest_release}/finalized/wp-content/" , :via => :scp)
@@ -63,6 +63,17 @@ Capistrano::Configuration.instance.load do
          chmod -R 777 #{latest_release}/finalized/wp-content/wp-cache-config.php")
 
       end
+
+      ## Allow plugin installation
+
+      if deploy_profile.modules.include? 'plugin-install'
+
+        run("mkdir -p #{latest_release}/finalized/wp-content/upgrade &&
+            chmod -R 777 #{latest_release}/finalized/wp-content/upgrade &&
+            chmod -R 777 #{latest_release}/finalized/wp-content/plugins")
+
+      end
+
     end
 
     desc "Compile SASS locally and upload it"

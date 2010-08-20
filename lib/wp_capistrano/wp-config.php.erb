@@ -78,6 +78,10 @@ $table_prefix  = 'wp_';
  */
 define ('WPLANG', '');
 
+<% constants.each_pair do |k,v| %>
+define('<%= k %>', <%= v %>);
+<% end %>
+
 /* That's all, stop editing! Happy blogging. */
 
 /** WordPress absolute path to the Wordpress directory. */
