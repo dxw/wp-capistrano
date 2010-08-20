@@ -17,7 +17,12 @@ Capistrano::Configuration.instance.load do
       # note well: the value is not assumed to be a string, it is a PHP literal
       constants = {}
       # For certain cases we may allow the user write access (i.e. module plugin-install)
-      constants['FS_METHOD'] = '"direct"'
+      constants['FS_METHOD'] = "'direct'"
+
+      # WP Super Cache
+      if deploy_profile.modules.include? 'wp-super-cache'
+        constants['WP_CACHE'] = "'true'"
+      end
 
       buffer = ERB.new(template).result(binding)
 
