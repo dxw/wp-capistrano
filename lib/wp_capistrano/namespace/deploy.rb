@@ -19,7 +19,6 @@ Capistrano::Configuration.instance.load do
       run <<-CMD
         mkdir -p #{latest_release}/finalized &&
         cp -rv   #{shared_path}/wordpress/*     #{latest_release}/finalized/ &&
-        cp -rv   #{shared_path}/wp-config.php   #{latest_release}/finalized/wp-config.php &&
         cp -rv   #{shared_path}/htaccess        #{latest_release}/finalized/.htaccess &&
         rm -rf   #{latest_release}/finalized/wp-content &&
         mkdir    #{latest_release}/finalized/wp-content &&
@@ -31,6 +30,8 @@ Capistrano::Configuration.instance.load do
         chmod -R 777 #{latest_release}/finalized/wp-content/cache/ ;
         true
       CMD
+
+      deploy.wp_config
 
       ## WP Super Cache
 
@@ -73,6 +74,65 @@ Capistrano::Configuration.instance.load do
             chmod -R 777 #{latest_release}/finalized/wp-content/plugins")
 
       end
+
+    end
+
+    desc "Copy shared wp-config into place, adding per-deploy constants"
+    task :wp_config do
+      ## Generate a couple of PHP fragments
+
+      # nb:
+      # - in a string=>string pair, the value represents a PHP literal (i.e. it includes the quotes)
+      #   the key, however, is a string
+      # - the convention is to put things into preconfig unless there's a reason not to
+      preconfig = {}
+      postconfig = {}
+      # For certain cases we may allow the user write access (i.e. module plugin-install)
+      # it should always be direct filesystem access (and WordPress' autodetection is pants)
+      preconfig['FS_METHOD'] = "'direct'"
+
+      # WP Super Cache
+      if deploy_profile.modules.include? 'wp-super-cache'
+        preconfig['WP_CACHE'] = "'true'"
+      end
+
+      def phpize(h)
+        s = ''
+        h.each_pair do |k,v|
+          s += "define('#{k}', #{v});\n"
+        end
+        s
+      end
+      #def fff(h)
+        #f = Tempfile.open('conf')
+        #h.each_pair do |k,v|
+          #f.puts "define('#{k}', #{v});"
+        #end
+        #f
+      #end
+
+      #pretmp = fff(preconfig)
+      #posttmp = fff(postconfig)
+      prestring = phpize(preconfig)
+      poststring = phpize(postconfig)
+
+      ## Upload fragments
+
+      run "mkdir -p #{latest_release}/build"
+      put prestring, "#{latest_release}/build/pre-config"
+      put poststring, "#{latest_release}/build/post-config"
+
+      ## sed them into wp-config (using perl)
+      r = "cp -rv #{shared_path}/wp-config.php #{latest_release}/wp-config.php &&"
+
+      %w[pre post].each do |pp|
+        f = "#{latest_release}/build/#{pp}-config"
+        r += %Q`perl -i -pe 'BEGIN{undef $/;open(F,"<#{f}");@f=<F>;$f=join("",@f);}s/## #{pp.upcase}CONFIG BEGIN.*## #{pp.upcase}CONFIG END./$f/ms' #{latest_release}/wp-config.php &&`
+      end
+
+      r += "cp -rv #{latest_release}/wp-config.php #{latest_release}/finalized/wp-config.php"
+
+      run r
 
     end
 

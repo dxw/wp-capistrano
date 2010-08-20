@@ -21,6 +21,10 @@
  * @package WordPress
  */
 
+## PRECONFIG BEGIN
+# Anything between these tags will be removed.
+## PRECONFIG END
+
 // ** MySQL settings - You can get this info from your web host ** //
 /** The name of the database for WordPress */
 define('DB_NAME', '<%= wordpress_db_name %>');
@@ -78,15 +82,15 @@ $table_prefix  = 'wp_';
  */
 define ('WPLANG', '');
 
-<% constants.each_pair do |k,v| %>
-define('<%= k %>', <%= v %>);
-<% end %>
-
 /* That's all, stop editing! Happy blogging. */
 
 /** WordPress absolute path to the Wordpress directory. */
 if ( !defined('ABSPATH') )
 	define('ABSPATH', dirname(__FILE__) . '/');
+
+## POSTCONFIG BEGIN
+# Anything between these tags will be removed.
+## POSTCONFIG END
 
 /** Sets up WordPress vars and included files. */
 require_once(ABSPATH . 'wp-settings.php');
