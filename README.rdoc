@@ -57,5 +57,13 @@ Which creates Capfile and lib/config.yml.
 
 == Credits
 
-Code originally adapted from:
+Code inspired by:
 http://github.com/jestro/wordpress-capistrano
+
+== Author
+
+* Tom Adams <tom@thedextrousweb.com>
+
+== Copyright
+
+Copyright © 2010 The Dextrous Web. See LICENCE for details.
