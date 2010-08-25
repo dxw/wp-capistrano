@@ -96,9 +96,12 @@ Capistrano::Configuration.instance.load do
       # it should always be direct filesystem access (and WordPress' autodetection is pants)
       preconfig['FS_METHOD'] = "'direct'"
 
-      # WP Super Cache
+      # Modules
       if deploy_profile.modules.include? 'wp-super-cache'
         preconfig['WP_CACHE'] = "'true'"
+      end
+      if deploy_profile.modules.include? 'shared-plugins'
+        preconfig['WP_PLUGIN_DIR'] = "'"+"#{shared_path}/plugins".gsub(/'/,"\\'")+"'"
       end
 
       def phpize(h)
