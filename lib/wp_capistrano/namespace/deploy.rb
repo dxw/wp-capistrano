@@ -24,12 +24,17 @@ Capistrano::Configuration.instance.load do
         mkdir    #{latest_release}/finalized/wp-content &&
         rm -rf #{latest_release}/**/.git &&
         cp -rv #{latest_release}/themes  #{latest_release}/finalized/wp-content/ &&
-        cp -rv #{latest_release}/plugins #{latest_release}/finalized/wp-content/ &&
         ln -s #{shared_path}/uploads   #{latest_release}/finalized/wp-content/ &&
         mkdir -p #{latest_release}/finalized/wp-content/cache/ ;
         chmod -R 777 #{latest_release}/finalized/wp-content/cache/ ;
         true
       CMD
+
+      if deploy_profile.modules.include? 'shared-plugins'
+        run("ln -s #{shared_path}/plugins #{latest_release}/finalized/wp-content/")
+      else
+        run("cp -rv #{latest_release}/plugins #{latest_release}/finalized/wp-content/")
+      end
 
       deploy.wp_config
 
@@ -71,7 +76,7 @@ Capistrano::Configuration.instance.load do
 
         run("mkdir -p #{latest_release}/finalized/wp-content/upgrade &&
             chmod -R 777 #{latest_release}/finalized/wp-content/upgrade &&
-            chmod -R 777 #{latest_release}/finalized/wp-content/plugins")
+            chmod -R 777 #{latest_release}/finalized/wp-content/plugins ; true")
 
       end
 

@@ -13,41 +13,53 @@ Capistrano::Configuration.instance.load do
       wp.config
       wp.htaccess
       wp.checkout
-      setup.uploads
+      setup.shared_dirs
       setup.mysql
     end
 
-    desc "Creates uploads dir"
-    task :uploads do
+    desc "Creates shared dirs"
+    task :shared_dirs do
 
-      stop = false
+      def try_upload dir
+        stop = false
 
-      # If it already exists, stop
-      run("ls -d #{shared_path}/uploads ; true") do |channel,stream,data|
-        if data.strip=="#{shared_path}/uploads"
-          STDERR.puts '*** uploads dir already exists. Not re-uploading.'
-          stop = true
-        end
-      end
-
-      unless stop
-        # If we have it, upload it
-        if File.exist?('uploads')
-          begin
-            upload("uploads", shared_path, :recursive => true, :via => :scp)
-          rescue
-            STDERR.puts '*** uploads dir already exists and does not belong to us. Can\'t re-upload.'
+        # If it already exists, stop
+        run("ls -d #{shared_path}/#{dir} ; true") do |channel,stream,data|
+          if data.strip=="#{shared_path}/#{dir}"
+            STDERR.puts "*** #{dir} dir already exists. Not re-uploading."
             stop = true
           end
-        else
-          run "mkdir -p #{shared_path}/uploads"
         end
 
         unless stop
-          # Let our Web server write to it
-          run "chmod -R 777 #{shared_path}/uploads"
+          # If we have it, upload it
+          if File.exist?(dir)
+            begin
+              upload(dir, shared_path, :recursive => true, :via => :scp)
+            rescue
+              STDERR.puts "*** #{dir} dir already exists and does not belong to us. Can't re-upload."
+              stop = true
+            end
+          else
+            run "mkdir -p #{shared_path}/#{dir}"
+          end
+
+          unless stop
+            # Let our Web server write to it
+            run "chmod -R 777 #{shared_path}/#{dir}"
+          end
         end
       end
+
+      ## Plugins
+
+      if deploy_profile.modules.include? 'shared-plugins'
+        try_upload('plugins')
+      end
+
+      ## Uploads
+
+      try_upload('uploads')
     end
 
     desc "Creates the DB, and loads the dump"
