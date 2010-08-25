@@ -108,16 +108,7 @@ Capistrano::Configuration.instance.load do
         end
         s
       end
-      #def fff(h)
-        #f = Tempfile.open('conf')
-        #h.each_pair do |k,v|
-          #f.puts "define('#{k}', #{v});"
-        #end
-        #f
-      #end
 
-      #pretmp = fff(preconfig)
-      #posttmp = fff(postconfig)
       prestring = phpize(preconfig)
       poststring = phpize(postconfig)
 
