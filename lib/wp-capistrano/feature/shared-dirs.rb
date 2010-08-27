@@ -3,14 +3,10 @@
 Capistrano::Configuration.instance.load do
   after 'setup:checkout' do
 
+    # Parse config
     dirs = []
-
-    # Uploads
-    dirs << 'uploads'
-
-    # Plugins
-    if deploy_profile.modules.include? 'shared-plugins'
-      dirs << 'plugins'
+    deploy_profile.modules.select{|m|m.is_a?(Hash) && m['shared-dirs']}.each do |m|
+      dirs = m['shared-dirs']
     end
 
     # Upload them
