@@ -36,33 +36,6 @@ Capistrano::Configuration.instance.load do
 
       deploy.wp_config
 
-      ## WP Super Cache
-
-      if File.exist? 'plugins/wp-super-cache/advanced-cache.php'
-        top.upload("plugins/wp-super-cache/advanced-cache.php", "#{latest_release}/finalized/wp-content/" , :via => :scp)
-        sedable_path = "#{latest_release}/finalized/wp-content/plugins/wp-super-cache/".gsub(/\//,'\/')
-        run("sed -i 's/CACHEHOME/#{sedable_path}/g' #{latest_release}/finalized/wp-content/advanced-cache.php")
-      else
-        raise IOError, 'Are you sure you have the WP Super Cache plugin?'
-      end
-
-      if File.exist? 'wp-cache-config.php'
-        top.upload("wp-cache-config.php", "#{latest_release}/finalized/wp-content/" , :via => :scp)
-      elsif File.exist? 'plugins/wp-super-cache/wp-cache-config-sample.php'
-        top.upload("plugins/wp-super-cache/wp-cache-config-sample.php", "#{latest_release}/finalized/wp-content/wp-cache-config.php" , :via => :scp)
-      else
-        raise IOError, 'Are you sure you have the WP Super Cache plugin?'
-      end
-
-      run("mkdir -p #{latest_release}/finalized/wp-content/cache/blogs &&
-           mkdir -p #{latest_release}/finalized/wp-content/cache/meta")
-
-      # Keep writables to a bare minimum
-      if deploy_profile.modules.include? 'wp-super-cache'
-        run("chmod -R 777 #{latest_release}/finalized/wp-content/cache &&
-             chmod -R 777 #{latest_release}/finalized/wp-content/wp-cache-config.php")
-      end
-
       ## Allow plugin installation
 
       if deploy_profile.modules.include? 'plugin-install'
@@ -73,6 +46,10 @@ Capistrano::Configuration.instance.load do
 
       end
 
+    end
+
+    # A dummy task to collect wp-config.php constants
+    task :wp_config_configure do
     end
 
     desc "Copy shared wp-config into place, adding per-deploy constants"
@@ -90,12 +67,12 @@ Capistrano::Configuration.instance.load do
       preconfig['FS_METHOD'] = "'direct'"
 
       # Modules
-      if deploy_profile.modules.include? 'wp-super-cache'
-        preconfig['WP_CACHE'] = "'true'"
-      end
       if deploy_profile.modules.include? 'shared-plugins'
         preconfig['WP_PLUGIN_DIR'] = "'"+"#{shared_path}/plugins".gsub(/'/,"\\'")+"'"
       end
+
+      # Allow modules a chance to interfere
+      deploy.wp_config_configure
 
       def phpize(h)
         s = []

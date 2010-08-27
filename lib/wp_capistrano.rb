@@ -10,6 +10,7 @@ require 'wp_capistrano/setup'
 require 'wp_capistrano/feature/cforms'
 require 'wp_capistrano/feature/htaccess'
 require 'wp_capistrano/feature/sass'
+require 'wp_capistrano/feature/wp-super-cache'
 
 Capistrano::Configuration.instance.load do
   default_run_options[:pty] = true
