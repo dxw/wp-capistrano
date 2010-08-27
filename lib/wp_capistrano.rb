@@ -6,6 +6,9 @@ require 'wp_config'
 require 'wp_capistrano/deploy'
 require 'wp_capistrano/setup'
 
+# Features
+require 'wp_capistrano/feature/sass'
+
 Capistrano::Configuration.instance.load do
   default_run_options[:pty] = true
 

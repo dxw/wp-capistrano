@@ -15,8 +15,6 @@ Capistrano::Configuration.instance.load do
       # Git 1.5-compatability:
       run "cd #{latest_release} && DIR=`pwd` && for D in `grep '^\\[submodule' .git/config | cut -d\\\" -f2`; do cd $DIR/$D && git submodule init && git submodule update; done"
 
-      deploy.sass
-
       run <<-CMD
         mkdir -p #{latest_release}/finalized &&
         cp -rv   #{shared_path}/wordpress/*     #{latest_release}/finalized/ &&
@@ -139,18 +137,6 @@ Capistrano::Configuration.instance.load do
 
       run r
 
-    end
-
-    desc "Compile SASS locally and upload it"
-    task :sass do
-      Dir.glob("themes/*/*/sass_output.php").map {|d| d.match(%r&/([^/]+)/([^/]+)/sass_output.php$&)[1,2]}[0..0].each do |theme_dir,sass_dir|
-        f = IO.popen("cd themes/#{theme_dir}/#{sass_dir} && php sass_output.php 2>/dev/null")
-        sass_output = f.readlines.join
-        remote_sass = "#{latest_release}/themes/#{theme_dir}/#{sass_dir}/sass_output.css"
-        put(sass_output, remote_sass, :via => :scp)
-        run("sed -i 's/\.php/\.css/' #{latest_release}/themes/#{theme_dir}/style.css &&
-            chmod a+r #{remote_sass}")
-      end
     end
 
     task :symlink, :except => { :no_release => true } do
