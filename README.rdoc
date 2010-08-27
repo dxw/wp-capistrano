@@ -20,7 +20,7 @@ Those should be copied into wp-content/Capfile and wp-content/lib/config.yml res
 
 For the initial run, you should first create the directory specified in deploy.*.path on the server, or at least make sure it's possible for the deploy user to create it, then run:
 
- cap setup:wordpress
+ cap setup
 
 This will create the Capistrano structure, check out the specified version of WordPress, create a shared directory full of things like wp-config.php and uploads. Now go and edit wp-config.php on the server, unless you specified the database password in config.yml. Then to deploy your wp-content, run:
 
@@ -37,13 +37,39 @@ And to setup/deploy to hosts other than the default, use:
  cap staging deploy
  cap production deploy
 
-== Additional features
+== Automagic features
 
 === SASS
 
 If there exists wp-content/themes/*/*/sass_output.php it will be executed (from that directory) and its contents will be placed in sass_output.css. Then ../style.css will be sedded to s/\.php/\.css/, and both will be uploaded to the appropriate places.
 
 sass_output.php can be found in wp-generate's theme generator. It is very handy for development, but less server load is more good, so we "cache" it in this way.
+
+=== htaccess
+
+Uploads ./htaccess to .htaccess if it exists.
+
+=== wp-content/uploads
+
+Uploads uploads directory at setup time if it exists, and ensures it's shared across releases. (TODO: Make this optional like shared-plugins)
+
+=== Initial database dump
+
+If there's a database dump at data/dump.sql.gz it uploads that at setup time and puts it into the database. (TODO: replace this feature with a task that takes the current database and uploads that)
+
+=== Fixing plugins
+
+- Makes cforms work without extra effort
+
+=== Modules
+
+Modules do things which can't be automagically divined:
+- plugin-install
+  - allows end-users to install plugins
+- shared-plugins
+  - keeps plugins in a shared directory (for use with plugin-install - stops plugins being lost when deploying)
+- wp-super-cache
+  - WP Super Cache is set up by default, and could be enabled in any release by chmodding wp-content/cache and wp-content/wp-cache-config.php appropriately and setting the WP_CACHE option to true, but this module does that for you
 
 == wp-generate
 
@@ -57,8 +83,7 @@ Which creates Capfile and lib/config.yml.
 
 == Credits
 
-Code inspired by:
-http://github.com/jestro/wordpress-capistrano
+Code inspired by: http://github.com/jestro/wordpress-capistrano
 
 == Author
 

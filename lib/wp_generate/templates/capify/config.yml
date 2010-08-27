@@ -5,9 +5,13 @@ wordpress:
   repository: "git://github.com/dxw/wordpress.git"
   version: "v2.9.2"
 deploy:
-  testing:
-    default: true
+  base: &base
     ssh_user: deploy
+    modules:
+      - wp-super-cache
+  testing:
+    <<: *base
+    default: true
     ssh_domain: "example.com"
     path: "/var/vhosts/example.com/testing/app"
     vhost: "app.testing.example.com"
@@ -17,7 +21,7 @@ deploy:
       password: ""
       host: "localhost"
   staging:
-    ssh_user: deploy
+    <<: *base
     ssh_domain: "example.com"
     path: "/var/vhosts/example.com/staging/app"
     vhost: "app.staging.example.com"
@@ -27,7 +31,7 @@ deploy:
       password: ""
       host: "localhost"
   production:
-    ssh_user: deploy
+    <<: *base
     ssh_domain: "example.com"
     path: "/var/vhosts/example.com/production/app"
     vhost: "app.com"
