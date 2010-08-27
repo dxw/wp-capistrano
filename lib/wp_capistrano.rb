@@ -11,6 +11,7 @@ require 'wp_capistrano/feature/cforms'
 require 'wp_capistrano/feature/htaccess'
 require 'wp_capistrano/feature/plugin-install'
 require 'wp_capistrano/feature/sass'
+require 'wp_capistrano/feature/shared-dirs'
 require 'wp_capistrano/feature/wp-super-cache'
 
 Capistrano::Configuration.instance.load do
