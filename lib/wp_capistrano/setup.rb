@@ -67,7 +67,7 @@ Capistrano::Configuration.instance.load do
 
     desc "Sets up shared wp-config.php"
     task :config do
-      file = File.join(File.dirname(__FILE__), "../wp-config.php.erb")
+      file = File.join(File.dirname(__FILE__), "wp-config.php.erb")
       template = File.read(file)
 
       buffer = ERB.new(template).result(binding)
