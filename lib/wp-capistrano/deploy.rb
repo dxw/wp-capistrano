@@ -24,13 +24,11 @@ Capistrano::Configuration.instance.load do
         true
       CMD
 
-      content_dirs = {'themes' => :copy,
-                      'uploads' => :link,
-                      'plugins' => :copy}
+      set :content_dirs, {'themes' => :copy,
+                          'uploads' => :copy,
+                          'plugins' => :copy}
 
-      if deploy_profile.modules.include? 'shared-plugins'
-        content_dirs['plugins'] = :link
-      end
+      deploy.content_dirs_configure
 
       content_dirs.each_pair do |dir,action|
         dest = "#{latest_release}/finalized/wp-content/"
@@ -44,6 +42,10 @@ Capistrano::Configuration.instance.load do
 
       deploy.wp_config
 
+    end
+
+    # A dummy task to collect content_dirs
+    task :content_dirs_configure do
     end
 
     # A dummy task to collect wp-config.php constants

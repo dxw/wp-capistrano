@@ -1,16 +1,22 @@
 # Shared directories get uploaded at setup-time and don't change
 
 Capistrano::Configuration.instance.load do
-  after 'setup:checkout' do
+  after 'set_target_' do
 
     # Parse config
-    dirs = []
+    set :shared_dirs, []
     deploy_profile.modules.select{|m|m.is_a?(Hash) && m['shared-dirs']}.each do |m|
-      dirs = m['shared-dirs']
+      m['shared-dirs'].each do |mm|
+        shared_dirs << mm
+      end
     end
 
-    # Upload them
-    dirs.each do |dir|
+  end
+
+  after 'setup:checkout' do
+
+    # Upload dirs
+    shared_dirs.each do |dir|
       stop = false
 
       # If it already exists, stop
@@ -45,8 +51,19 @@ Capistrano::Configuration.instance.load do
 
   before 'deploy:wp_config_configure' do
 
-    if deploy_profile.modules.include? 'shared-plugins'
-      preconfig['WP_PLUGIN_DIR'] = "'"+"#{shared_path}/plugins".gsub(/'/,"\\'")+"'"
+    if shared_dirs.include? 'plugins'
+      preconfig['WP_PLUGIN_DIR'] = "'#{shared_path}/plugins'"
+    end
+
+  end
+
+  before 'deploy:content_dirs_configure' do
+    p 'hihi'
+
+    p shared_dirs
+
+    shared_dirs.each do |dir|
+      content_dirs[dir] = :link
     end
 
   end

@@ -17,6 +17,10 @@ require 'wp-capistrano/feature/wp-super-cache'
 Capistrano::Configuration.instance.load do
   default_run_options[:pty] = true
 
+  # Dummy task
+  task :set_target_ do
+  end
+
   def set_target target
     tt = WPConfig.instance.h['deploy'][target]
     if tt
@@ -41,6 +45,9 @@ Capistrano::Configuration.instance.load do
       role :web, domain
       role :db,  domain, :primary => true
     end
+
+    # Allow features to plug in here
+    set_target_
   end
 
   WPConfig.instance.h['deploy'].each_pair do |k,v|
