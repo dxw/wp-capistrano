@@ -19,17 +19,27 @@ Capistrano::Configuration.instance.load do
         rm -rf   #{latest_release}/finalized/wp-content &&
         mkdir    #{latest_release}/finalized/wp-content &&
         rm -rf #{latest_release}/**/.git &&
-        cp -rv #{latest_release}/themes  #{latest_release}/finalized/wp-content/ &&
-        ln -s #{shared_path}/uploads   #{latest_release}/finalized/wp-content/ &&
         mkdir -p #{latest_release}/finalized/wp-content/cache/ ;
         chmod -R 777 #{latest_release}/finalized/wp-content/cache/ ;
         true
       CMD
 
+      content_dirs = {'themes' => :copy,
+                      'uploads' => :link,
+                      'plugins' => :copy}
+
       if deploy_profile.modules.include? 'shared-plugins'
-        run("ln -s #{shared_path}/plugins #{latest_release}/finalized/wp-content/")
-      else
-        run("cp -rv #{latest_release}/plugins #{latest_release}/finalized/wp-content/")
+        content_dirs['plugins'] = :link
+      end
+
+      content_dirs.each_pair do |dir,action|
+        dest = "#{latest_release}/finalized/wp-content/"
+        case action
+        when :copy
+          run "cp -rv #{latest_release}/#{dir} #{dest}"
+        when :link then 'ln -s'
+          run "ln -s #{shared_path}/#{dir} #{dest}"
+        end
       end
 
       deploy.wp_config

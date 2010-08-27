@@ -49,9 +49,9 @@ Capistrano::Configuration.instance.load do
 
   before 'deploy:wp_config_configure' do
 
-      if deploy_profile.modules.include? 'shared-plugins'
-        preconfig['WP_PLUGIN_DIR'] = "'"+"#{shared_path}/plugins".gsub(/'/,"\\'")+"'"
-      end
+    if deploy_profile.modules.include? 'shared-plugins'
+      preconfig['WP_PLUGIN_DIR'] = "'"+"#{shared_path}/plugins".gsub(/'/,"\\'")+"'"
+    end
 
   end
 end
