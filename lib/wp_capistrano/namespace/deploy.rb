@@ -105,11 +105,11 @@ Capistrano::Configuration.instance.load do
       end
 
       def phpize(h)
-        s = ''
+        s = []
         h.each_pair do |k,v|
-          s += "define('#{k}', #{v});\n"
+          s << "define('#{k}', #{v});"
         end
-        s
+        s.join("\n")
       end
 
       prestring = phpize(preconfig)
@@ -138,11 +138,12 @@ Capistrano::Configuration.instance.load do
     desc "Compile SASS locally and upload it"
     task :sass do
       Dir.glob("themes/*/*/sass_output.php").map {|d| d.match(%r&/([^/]+)/([^/]+)/sass_output.php$&)[1,2]}[0..0].each do |theme_dir,sass_dir|
-        p theme_dir
-        p sass_dir
-        system("cd themes/#{theme_dir}/#{sass_dir} && php sass_output.php > sass_output.css")
-        top.upload("themes/#{theme_dir}/#{sass_dir}/sass_output.css", "#{latest_release}/themes/#{theme_dir}/#{sass_dir}/" , :via => :scp)
-        run("sed -i 's/\.php/\.css/' #{latest_release}/themes/#{theme_dir}/style.css")
+        f = IO.popen("cd themes/#{theme_dir}/#{sass_dir} && php sass_output.php 2>/dev/null")
+        sass_output = f.readlines.join
+        remote_sass = "#{latest_release}/themes/#{theme_dir}/#{sass_dir}/sass_output.css"
+        put(sass_output, remote_sass, :via => :scp)
+        run("sed -i 's/\.php/\.css/' #{latest_release}/themes/#{theme_dir}/style.css &&
+            chmod a+r #{remote_sass}")
       end
     end
 
