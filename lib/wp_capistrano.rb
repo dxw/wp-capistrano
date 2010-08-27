@@ -7,6 +7,8 @@ require 'wp_capistrano/deploy'
 require 'wp_capistrano/setup'
 
 # Features
+require 'wp_capistrano/feature/cforms'
+require 'wp_capistrano/feature/htaccess'
 require 'wp_capistrano/feature/sass'
 
 Capistrano::Configuration.instance.load do
