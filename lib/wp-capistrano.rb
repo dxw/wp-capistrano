@@ -2,17 +2,17 @@ require 'erb'
 require 'digest'
 require 'digest/sha1'
 
-require 'wp_config'
-require 'wp_capistrano/deploy'
-require 'wp_capistrano/setup'
+require 'wp-config'
+require 'wp-capistrano/deploy'
+require 'wp-capistrano/setup'
 
 # Features
-require 'wp_capistrano/feature/cforms'
-require 'wp_capistrano/feature/htaccess'
-require 'wp_capistrano/feature/plugin-install'
-require 'wp_capistrano/feature/sass'
-require 'wp_capistrano/feature/shared-dirs'
-require 'wp_capistrano/feature/wp-super-cache'
+require 'wp-capistrano/feature/cforms'
+require 'wp-capistrano/feature/htaccess'
+require 'wp-capistrano/feature/plugin-install'
+require 'wp-capistrano/feature/sass'
+require 'wp-capistrano/feature/shared-dirs'
+require 'wp-capistrano/feature/wp-super-cache'
 
 Capistrano::Configuration.instance.load do
   default_run_options[:pty] = true
