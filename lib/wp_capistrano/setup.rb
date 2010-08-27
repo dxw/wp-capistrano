@@ -13,7 +13,6 @@ Capistrano::Configuration.instance.load do
       setup.config
       setup.checkout
       setup.shared_dirs
-      setup.mysql
     end
 
     desc "Creates shared dirs"
@@ -59,18 +58,6 @@ Capistrano::Configuration.instance.load do
       ## Uploads
 
       try_upload('uploads')
-    end
-
-    desc "Creates the DB, and loads the dump"
-    task :mysql do
-      if File.exist? 'data/dump.sql.gz'
-        upload("data/dump.sql.gz", shared_path, :via => :scp)
-        run <<-CMD
-        test #{wordpress_db_name}X != `echo 'show databases' | mysql | grep '^#{wordpress_db_name}$'`X &&
-        echo 'create database if not exists `#{wordpress_db_name}`' | mysql &&
-        zcat #{shared_path}/dump.sql.gz | sed 's/localhost/#{wordpress_domain}/g' | mysql #{wordpress_db_name} || true
-        CMD
-      end
     end
 
     desc "Checks out a copy of wordpress to a shared location"
