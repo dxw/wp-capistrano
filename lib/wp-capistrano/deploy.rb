@@ -48,8 +48,8 @@ Capistrano::Configuration.instance.load do
       # - in a string=>string pair, the value represents a PHP literal (i.e. it includes the quotes)
       #   the key, however, is a string
       # - the convention is to put things into preconfig unless there's a reason not to
-      preconfig = {}
-      postconfig = {}
+      set :preconfig, {}
+      set :postconfig, {}
       # For certain cases we may allow the user write access (i.e. module plugin-install)
       # it should always be direct filesystem access (and WordPress' autodetection is pants)
       preconfig['FS_METHOD'] = "'direct'"

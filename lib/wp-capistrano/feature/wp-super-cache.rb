@@ -2,7 +2,7 @@
 
 Capistrano::Configuration.instance.load do
 
-  before 'deploy:wp_config_configuration' do
+  before 'deploy:wp_config_configure' do
     if deploy_profile.modules.include? 'wp-super-cache'
       preconfig['WP_CACHE'] = "'true'"
     end
