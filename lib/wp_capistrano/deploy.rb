@@ -5,7 +5,6 @@ require 'digest/sha1'
 
 require 'wp_capistrano/namespace/deploy'
 require 'wp_capistrano/namespace/setup'
-require 'wp_capistrano/namespace/wp'
 
 Capistrano::Configuration.instance.load do
   default_run_options[:pty] = true
