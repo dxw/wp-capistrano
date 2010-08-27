@@ -9,6 +9,7 @@ require 'wp_capistrano/setup'
 # Features
 require 'wp_capistrano/feature/cforms'
 require 'wp_capistrano/feature/htaccess'
+require 'wp_capistrano/feature/plugin-install'
 require 'wp_capistrano/feature/sass'
 require 'wp_capistrano/feature/wp-super-cache'
 

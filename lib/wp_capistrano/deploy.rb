@@ -36,16 +36,6 @@ Capistrano::Configuration.instance.load do
 
       deploy.wp_config
 
-      ## Allow plugin installation
-
-      if deploy_profile.modules.include? 'plugin-install'
-
-        run("mkdir -p #{latest_release}/finalized/wp-content/upgrade &&
-            chmod -R 777 #{latest_release}/finalized/wp-content/upgrade &&
-            chmod -R 777 #{latest_release}/finalized/wp-content/plugins ; true")
-
-      end
-
     end
 
     # A dummy task to collect wp-config.php constants
