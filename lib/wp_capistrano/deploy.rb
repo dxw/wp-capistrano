@@ -63,12 +63,6 @@ Capistrano::Configuration.instance.load do
              chmod -R 777 #{latest_release}/finalized/wp-content/wp-cache-config.php")
       end
 
-      ## Custom htaccess
-
-      if File.exist? 'htaccess'
-        top.upload("htaccess", "#{latest_release}/finalized/.htaccess" , :via => :scp)
-      end
-
       ## Allow plugin installation
 
       if deploy_profile.modules.include? 'plugin-install'
