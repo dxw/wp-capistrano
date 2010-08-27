@@ -51,17 +51,10 @@ Capistrano::Configuration.instance.load do
   end
 
   WPConfig.instance.h['deploy'].each_pair do |k,v|
+    task k do
+      set_target k
+    end
     set_target k if v['default']
-  end
-
-  task :testing do
-    set_target 'testing'
-  end
-  task :staging do
-    set_target 'staging'
-  end
-  task :production do
-    set_target 'production'
   end
 
   # Load from config
