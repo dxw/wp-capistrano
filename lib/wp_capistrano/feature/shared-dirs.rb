@@ -3,7 +3,18 @@
 Capistrano::Configuration.instance.load do
   after 'setup:checkout' do
 
-    def try_upload dir
+    dirs = []
+
+    # Uploads
+    dirs << 'uploads'
+
+    # Plugins
+    if deploy_profile.modules.include? 'shared-plugins'
+      dirs << 'plugins'
+    end
+
+    # Upload them
+    dirs.each do |dir|
       stop = false
 
       # If it already exists, stop
@@ -33,16 +44,6 @@ Capistrano::Configuration.instance.load do
         end
       end
     end
-
-    ## Plugins
-
-    if deploy_profile.modules.include? 'shared-plugins'
-      try_upload('plugins')
-    end
-
-    ## Uploads
-
-    try_upload('uploads')
 
   end
 end
