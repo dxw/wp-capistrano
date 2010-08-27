@@ -19,7 +19,6 @@ Capistrano::Configuration.instance.load do
       run <<-CMD
         mkdir -p #{latest_release}/finalized &&
         cp -rv   #{shared_path}/wordpress/*     #{latest_release}/finalized/ &&
-        cp -rv   #{shared_path}/htaccess        #{latest_release}/finalized/.htaccess &&
         rm -rf   #{latest_release}/finalized/wp-content &&
         mkdir    #{latest_release}/finalized/wp-content &&
         rm -rf #{latest_release}/**/.git &&
@@ -170,5 +169,6 @@ Capistrano::Configuration.instance.load do
         puts 'hhh'
       end
     end
+
   end
 end

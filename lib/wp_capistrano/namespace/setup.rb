@@ -11,7 +11,6 @@ Capistrano::Configuration.instance.load do
       "mkdir -p #{deploy_to}"
       deploy.setup
       setup.config
-      setup.htaccess
       setup.checkout
       setup.shared_dirs
       setup.mysql
@@ -91,11 +90,6 @@ Capistrano::Configuration.instance.load do
 
       put buffer, "#{shared_path}/wp-config.php"
       puts "New wp-config.php uploaded! Please run cap:deploy to activate these changes."
-    end
-
-    desc "Sets up .htaccess"
-    task :htaccess do
-      run 'env echo -e \'<IfModule mod_rewrite.c>\nRewriteEngine On\nRewriteBase /\nRewriteCond %{REQUEST_FILENAME} !-f\nRewriteCond %{REQUEST_FILENAME} !-d\nRewriteRule . /index.php [L]\n</IfModule>\' > '"#{shared_path}/htaccess"
     end
 
   end
