@@ -40,34 +40,35 @@ Capistrano::Configuration.instance.load do
 
       ## WP Super Cache
 
+      if File.exist? 'plugins/wp-super-cache/advanced-cache.php'
+        top.upload("plugins/wp-super-cache/advanced-cache.php", "#{latest_release}/finalized/wp-content/" , :via => :scp)
+        sedable_path = "#{latest_release}/finalized/wp-content/plugins/wp-super-cache/".gsub(/\//,'\/')
+        run("sed -i 's/CACHEHOME/#{sedable_path}/g' #{latest_release}/finalized/wp-content/advanced-cache.php")
+      else
+        raise IOError, 'Are you sure you have the WP Super Cache plugin?'
+      end
+
+      if File.exist? 'wp-cache-config.php'
+        top.upload("wp-cache-config.php", "#{latest_release}/finalized/wp-content/" , :via => :scp)
+      elsif File.exist? 'plugins/wp-super-cache/wp-cache-config-sample.php'
+        top.upload("plugins/wp-super-cache/wp-cache-config-sample.php", "#{latest_release}/finalized/wp-content/wp-cache-config.php" , :via => :scp)
+      else
+        raise IOError, 'Are you sure you have the WP Super Cache plugin?'
+      end
+
+      run("mkdir -p #{latest_release}/finalized/wp-content/cache/blogs &&
+           mkdir -p #{latest_release}/finalized/wp-content/cache/meta")
+
+      # Keep writables to a bare minimum
       if deploy_profile.modules.include? 'wp-super-cache'
+        run("chmod -R 777 #{latest_release}/finalized/wp-content/cache &&
+             chmod -R 777 #{latest_release}/finalized/wp-content/wp-cache-config.php")
+      end
 
-        if File.exist? 'plugins/wp-super-cache/advanced-cache.php'
-          top.upload("plugins/wp-super-cache/advanced-cache.php", "#{latest_release}/finalized/wp-content/" , :via => :scp)
-          sedable_path = "#{latest_release}/finalized/wp-content/plugins/wp-super-cache/".gsub(/\//,'\/')
-          run("sed -i 's/CACHEHOME/#{sedable_path}/g' #{latest_release}/finalized/wp-content/advanced-cache.php")
-        else
-          raise IOError, 'Are you sure you have the WP Super Cache plugin?'
-        end
+      ## Custom htaccess
 
-        if File.exist? 'wp-cache-config.php'
-          top.upload("wp-cache-config.php", "#{latest_release}/finalized/wp-content/" , :via => :scp)
-        elsif File.exist? 'plugins/wp-super-cache/wp-cache-config-sample.php'
-          top.upload("plugins/wp-super-cache/wp-cache-config-sample.php", "#{latest_release}/finalized/wp-content/wp-cache-config.php" , :via => :scp)
-        else
-          raise IOError, 'Are you sure you have the WP Super Cache plugin?'
-        end
-
-        #TODO
-        if File.exist? 'htaccess'
-          top.upload("htaccess", "#{latest_release}/finalized/.htaccess" , :via => :scp)
-        end
-
-        run("mkdir -p #{latest_release}/finalized/wp-content/cache/blogs &&
-         mkdir -p #{latest_release}/finalized/wp-content/cache/meta &&
-         chmod -R 777 #{latest_release}/finalized/wp-content/cache &&
-         chmod -R 777 #{latest_release}/finalized/wp-content/wp-cache-config.php")
-
+      if File.exist? 'htaccess'
+        top.upload("htaccess", "#{latest_release}/finalized/.htaccess" , :via => :scp)
       end
 
       ## Allow plugin installation
