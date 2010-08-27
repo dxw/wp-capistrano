@@ -3,7 +3,6 @@ Capistrano::Configuration.instance.load do
 
     desc "Override deploy restart to not do anything"
     task :restart do
-      #
     end
 
     task :finalize_update, :except => { :no_release => true } do
