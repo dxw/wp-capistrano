@@ -1,0 +1,81 @@
+#!/usr/bin/env ruby
+
+require 'fileutils'
+require 'optparse'
+
+FILES = {
+  'Capfile' => <<-END,
+load 'deploy'
+require 'wp-capistrano'
+  END
+  'lib/config.yml' => <<-END
+--- 
+application:
+  repository: git@github.com:user/repo.git
+wordpress:
+  repository: git://github.com:dxw/wordpress.git
+  version: v3.0.1
+deploy:
+  base: &base
+    ssh_user: deploy
+    ssh_domain: example.org
+    modules:
+      - shared-dirs:
+        - uploads
+  staging:
+    <<: *base
+    default: true
+    path: /var/vhosts/example.org/staging/www
+    vhost: staging.example.org
+    database:
+      user: root
+      name: example_staging
+  production:
+    <<: *base
+    path: /var/vhosts/example.org/www
+    vhost: example.org
+    database:
+      user: root
+      name: example_production
+  END
+}
+
+opt = OptionParser.new do |opts|
+  opts.banner = "Usage: wpcapify PATH"
+end
+
+argv = opt.parse(ARGV)
+
+if argv.empty?
+  warn "Please specify the directory to wpcapify, e.g. `wpcapify .'"
+  exit 1
+elsif argv.length > 1
+  warn "Too many arguments; please specify only the directory to wpcapify."
+  exit 1
+else
+  dir = argv.first
+
+  FILES.each do |path,content|
+    reported_path = File.join(dir, path)
+    exact_path = File.expand_path(reported_path)
+
+    if File.exist? exact_path
+      warn "[skip] '#{reported_path}' already exists"
+    else
+      d = File.dirname(exact_path)
+
+      unless File.exist? d
+        FileUtils.mkdir_p(d)
+        warn "[add] making directory '#{File.dirname(reported_path)}'"
+      end
+
+      open(exact_path,'w') do |f|
+        f.write(content)
+      end
+      warn "[add] writing '#{reported_path}'"
+    end
+  end
+
+  warn "[done] wpcapified!"
+
+end
