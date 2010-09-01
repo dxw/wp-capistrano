@@ -55,6 +55,21 @@ elsif argv.length > 1
 else
   dir = argv.first
 
+  # Do something really clever (set application/repository automagically)
+
+  app_repo = nil
+  Dir.chdir(dir) do
+    f = `git remote -v 2>/dev/null`
+    f.each do |l|
+      if m = l.match(/^origin\s+(.+)\s+\(fetch\)$/)
+        app_repo = m[1]
+      end
+    end
+  end
+  FILES['lib/config.yml'].sub!('git@github.com:user/repo.git', app_repo) if app_repo
+
+  # Write files
+
   FILES.each do |path,content|
     reported_path = File.join(dir, path)
     exact_path = File.expand_path(reported_path)
