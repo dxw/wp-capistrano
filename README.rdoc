@@ -8,15 +8,15 @@ A sample Capfile and config.yml exist in lib/wp_generate/templates/capify.
 
 Those should be copied into wp-content/Capfile and wp-content/lib/config.yml respectively. Things you'll need to change in config.yml include:
 
-- application.repository -> set that to the repository that includes the contents of wp-content
-- wordpress.repository -> in the sample this is set to our mirror on GitHub, but you may prefer to mirror that locally or set up your own
-- wordpress.version -> a git tree-ish, which can be a branch name, tag, or a commit hash (e.g. v2.9.2)
-- deploy.* -> these names are used when doing cap deploy when deploying to non-default environments (i.e. cap production deploy)
-- deploy.*.ssh_user -> the user who will log into the machine, if omitted will use the default
-- deploy.*.ssh_domain -> the host to be SSHed into
-- deploy.*.path -> the path on the remote machine
-- deploy.*.vhost -> the intended host name when being viewed on the remote machine
-- deploy.*.database.*
+[application.repository] Set that to the repository that includes the contents of wp-content
+[wordpress.repository] In the sample this is set to our mirror on GitHub, but you may prefer to mirror that locally or set up your own
+[wordpress.version] A git tree-ish, which can be a branch name, tag, or a commit hash (e.g. v2.9.2)
+[deploy.*] These names are used when doing cap deploy when deploying to non-default environments (i.e. cap production deploy)
+[deploy.*.ssh_user] The user who will log into the machine, if omitted will use the default
+[deploy.*.ssh_domain] The host to be SSHed into
+[deploy.*.path] The path on the remote machine
+[deploy.*.vhost] The intended host name when being viewed on the remote machine
+[deploy.*.database.*] All the database settings
 
 For the initial run, you should first create the directory specified in deploy.*.path on the server, or at least make sure it's possible for the deploy user to create it, then run:
 
