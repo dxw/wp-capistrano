@@ -23,6 +23,7 @@ Configuration options:
 [deploy.*.path]          The path on the remote machine
 [deploy.*.vhost]         The HTTP hostname - sets WP_HOME and WP_SITEURL
 [deploy.*.database.*]    All the database settings (name, user, host, password)
+[deploy.*.modules]       A list of modules that should be enabled
 
 Before you run <tt>cap setup</tt> or <tt>cap deploy</tt>, you should ensure the path on the remote machine exists and is chmodded such that the deploy user can write to it.
 
@@ -30,57 +31,45 @@ To deploy to production rather than staging, for instance:
 
  cap production deploy
 
+== Modules
+
+These are configured in deploy.*.modules:
+
+[plugin-install] Makes the plugin directory writable by all, and creates the upgrade directory
+[shared-dirs]    Copies local directory to remote machine at setup time, and makes it writable by all
+[wp-super-cache] Sets up WP Super Cache, including wp-config, and setting up the appropriate cache directories
+
+Note: Some modules are set with a string, others are set with a hash. For instance:
+
+ - modules:
+   - plugin-install
+   - shared-dirs:
+     - plugins
+     - uploads
+   - wp-super-cache
+
 == Automagic features
 
 === SASS
 
-If there exists wp-content/themes/*/*/sass_output.php it will be executed (from that directory) and its contents will be placed in sass_output.css. Then ../style.css will be sedded to s/\.php/\.css/, and both will be uploaded to the appropriate places.
+If there exists wp-content/themes/*/*/sass_output.php it will be executed locally and its contents will be uploaded as sass_output.css. Then style.css will be sedded to s/\.php/\.css/.
 
-sass_output.php can be found in wp-generate's theme generator. It is very handy for development, but less server load is more good, so we "cache" it in this way.
+A sample sass_output.php can be found in wp-generate ( http://github.com/dxw/wp-generate ).
 
 === htaccess
 
 Uploads ./htaccess to .htaccess if it exists.
 
-=== wp-content/uploads
-
-Uploads uploads directory at setup time if it exists, and ensures it's shared across releases. (TODO: Make this optional like shared-plugins)
-
-=== Initial database dump
-
-If there's a database dump at data/dump.sql.gz it uploads that at setup time and puts it into the database. (TODO: replace this feature with a task that takes the current database and uploads that)
-
 === Fixing plugins
 
-- Makes cforms work without extra effort
+Some plugins require esoteric setups. We fix these automatically:
 
-=== Modules
-
-Modules do things which can't be automagically divined:
-- plugin-install
-  - allows end-users to install plugins
-- shared-plugins
-  - keeps plugins in a shared directory (for use with plugin-install - stops plugins being lost when deploying)
-- wp-super-cache
-  - WP Super Cache is set up by default, and could be enabled in any release by chmodding wp-content/cache and wp-content/wp-cache-config.php appropriately and setting the WP_CACHE option to true, but this module does that for you
-
-== wp-generate
-
-wp-capistrano can be used with wp-generate by doing the following:
-
- gem install wp-generate
- cd wp-content
- wp-generate capify
-
-Which creates Capfile and lib/config.yml.
+- Cforms
 
 == Credits
 
-Code inspired by: http://github.com/jestro/wordpress-capistrano
-
-== Author
-
-* Tom Adams <tom@thedextrousweb.com>
+[Main author] Tom Adams <tom@thedextrousweb.com>
+[Some code]   http://github.com/jestro/wordpress-capistrano
 
 == Copyright
 
