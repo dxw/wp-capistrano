@@ -4,37 +4,30 @@ Capistrano receipe for WordPress
 
 == Usage
 
-A sample Capfile and config.yml exist in lib/wp_generate/templates/capify.
-
-Those should be copied into wp-content/Capfile and wp-content/lib/config.yml respectively. Things you'll need to change in config.yml include:
-
-[application.repository] Set that to the repository that includes the contents of wp-content
-[wordpress.repository] In the sample this is set to our mirror on GitHub, but you may prefer to mirror that locally or set up your own
-[wordpress.version] A git tree-ish, which can be a branch name, tag, or a commit hash (e.g. v2.9.2)
-[deploy.*] These names are used when doing cap deploy when deploying to non-default environments (i.e. cap production deploy)
-[deploy.*.ssh_user] The user who will log into the machine, if omitted will use the default
-[deploy.*.ssh_domain] The host to be SSHed into
-[deploy.*.path] The path on the remote machine
-[deploy.*.vhost] The intended host name when being viewed on the remote machine
-[deploy.*.database.*] All the database settings
-
-For the initial run, you should first create the directory specified in deploy.*.path on the server, or at least make sure it's possible for the deploy user to create it, then run:
-
- cap setup
-
-This will create the Capistrano structure, check out the specified version of WordPress, create a shared directory full of things like wp-config.php and uploads. Now go and edit wp-config.php on the server, unless you specified the database password in config.yml. Then to deploy your wp-content, run:
-
+ gem install wp-capistrano
+ cd /path/to/wordpress/wp-content
+ wpcapify .
+ vim lib/config.yml
+ cap setup # once
  cap deploy
 
-If you've set up Apache correctly (a .htaccess will be created, but that's all the help it will give you), you can visit the vhost you specified and everything should be working.
+Configuration options:
 
-When you update things, don't forget to push wp-content (and any submodules), and:
+[application.repository] The repository that contains wp-content
+[wordpress.repository]   By default, it uses our GitHub mirror
+[wordpress.version]      A git tree-ish, which can be a branch name, tag, or a commit hash (e.g. v3.0.1)
+[deploy.*]               These names are used when doing cap deploy when deploying to non-default environments (i.e. cap production deploy)
+[deploy.*.default]       Set this to true to make this the default target
+[deploy.*.ssh_user]      The deploy user (who should have write access to +path+ on the remote machine)
+[deploy.*.ssh_domain]    The host where the site lives
+[deploy.*.path]          The path on the remote machine
+[deploy.*.vhost]         The HTTP hostname - sets WP_HOME and WP_SITEURL
+[deploy.*.database.*]    All the database settings (name, user, host, password)
 
- cap deploy
+Before you run <tt>cap setup</tt> or <tt>cap deploy</tt>, you should ensure the path on the remote machine exists and is chmodded such that the deploy user can write to it.
 
-And to setup/deploy to hosts other than the default, use:
+To deploy to production rather than staging, for instance:
 
- cap staging deploy
  cap production deploy
 
 == Automagic features

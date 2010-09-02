@@ -13,7 +13,7 @@ require 'wp-capistrano'
 application:
   repository: git@github.com:user/repo.git
 wordpress:
-  repository: git://github.com:dxw/wordpress.git
+  repository: git://github.com/dxw/wordpress.git
   version: v3.0.1
 deploy:
   base: &base
@@ -28,15 +28,15 @@ deploy:
     path: /var/vhosts/example.org/staging/www
     vhost: staging.example.org
     database:
-      user: root
       name: example_staging
+      user: root
   production:
     <<: *base
     path: /var/vhosts/example.org/www
     vhost: example.org
     database:
-      user: root
       name: example_production
+      user: root
   END
 }
 
