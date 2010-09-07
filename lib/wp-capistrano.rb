@@ -8,6 +8,7 @@ require 'wp-capistrano/setup'
 
 # Features
 require 'wp-capistrano/feature/cforms'
+require 'wp-capistrano/feature/compass'
 require 'wp-capistrano/feature/htaccess'
 require 'wp-capistrano/feature/plugin-install'
 require 'wp-capistrano/feature/sass'
