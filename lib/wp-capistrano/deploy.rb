@@ -34,9 +34,11 @@ Capistrano::Configuration.instance.load do
         dest = "#{latest_release}/finalized/wp-content/"
         case action
         when :copy
-          run "cp -rv #{latest_release}/#{dir} #{dest}"
+          src = "#{latest_release}/#{dir}"
+          run "[ -e #{src} ] && cp -rv #{src} #{dest} || true"
         when :link then 'ln -s'
-          run "ln -s #{shared_path}/#{dir} #{dest}"
+          src = "#{shared_path}/#{dir}"
+          run "[ -e #{src} ] && ln -s #{src} #{dest} || true"
         end
       end
 
