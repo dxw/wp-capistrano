@@ -56,6 +56,10 @@ If there exists wp-content/themes/*/*/sass_output.php it will be executed locall
 
 A sample sass_output.php can be found in wp-generate ( http://github.com/dxw/wp-generate ).
 
+=== Compass
+
+If there's a compass config file in the theme, it will be found and compiled locally, and the stylesheets directory will be uploaded to the correct place.
+
 === htaccess
 
 Uploads ./htaccess to .htaccess if it exists.
