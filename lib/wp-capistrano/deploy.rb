@@ -67,6 +67,8 @@ Capistrano::Configuration.instance.load do
       # For certain cases we may allow the user write access (i.e. module plugin-install)
       # it should always be direct filesystem access (and WordPress' autodetection is pants)
       preconfig['FS_METHOD'] = "'direct'"
+      # Generally speaking we don't want file editing
+      preconfig['DISALLOW_FILE_EDIT'] = 'true'
 
       # Allow modules a chance to interfere
       deploy.wp_config_configure
