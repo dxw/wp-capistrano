@@ -27,6 +27,7 @@ Capistrano::Configuration.instance.load do
   def set_target target
     tt = WPConfig.instance.h['deploy'][target]
     if tt
+      set :deploy_target, target
       t = OpenStruct.new(tt)
       set :domain, t.ssh_domain
       set :user, t.ssh_user
