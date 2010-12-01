@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 # WP Super Cache
 
 Capistrano::Configuration.instance.load do

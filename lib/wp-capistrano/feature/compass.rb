@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 # Assumes you're using DXW's sass_output.php convention
 # A sample can be found in dxw/wp-generate:
 # http://github.com/dxw/wp-generate/blob/master/lib/wp_generate/templates/theme/sass/sass_output.php

@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 # Make the cforms plugin work
 
 Capistrano::Configuration.instance.load do

@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 # Allow plugin installation by end-users
 
 Capistrano::Configuration.instance.load do

@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 # Runs make deploy in the root of the project if Makefile is found
 # And uploads any files listed in Manifest.yml
 

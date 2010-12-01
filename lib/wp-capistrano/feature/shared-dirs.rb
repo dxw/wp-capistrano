@@ -1,3 +1,5 @@
+# encoding: utf-8
+
 # Shared directories get uploaded at setup-time and don't change
 
 Capistrano::Configuration.instance.load do
