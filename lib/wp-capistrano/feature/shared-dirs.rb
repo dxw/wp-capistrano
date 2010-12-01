@@ -60,10 +60,6 @@ Capistrano::Configuration.instance.load do
   end
 
   before 'deploy:content_dirs_configure' do
-    p 'hihi'
-
-    p shared_dirs
-
     shared_dirs.each do |dir|
       content_dirs[dir] = :link
     end
