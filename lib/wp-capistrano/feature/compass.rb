@@ -20,7 +20,7 @@ begin
           abs_css = File.expand_path(File.join(theme_dir, cfg.css_path))
 
           # Compile
-          compiled = system("compass compile --force --output-style compressed #{theme_dir}")
+          compiled = system("compass compile --trace --force --output-style compressed #{theme_dir}")
           #TODO: do this instead
           #Compass.compiler.options[:style] = :compressed
           #Compass.compiler.run

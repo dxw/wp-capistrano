@@ -67,11 +67,11 @@ Capistrano::Configuration.instance.load do
   set :wordpress_version, WPConfig.wordpress.version
   set :wordpress_git_url, WPConfig.wordpress.repository
   set :repository, WPConfig.application.repository
+  set :branch, WPConfig.application.version
 
   # Everything else
   set :scm, "git"
   set :deploy_via, :remote_cache
-  set :branch, "master"
   set :git_shallow_clone, 1
   set :git_enable_submodules, 1
   set :wordpress_db_host, "localhost"
