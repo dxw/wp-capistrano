@@ -18,7 +18,7 @@ Capistrano::Configuration.instance.load do
       run "rm -rf #{shared_path}/wordpress || true"
       raise Exception, 'wordpress.repository must be set in config.yml' if wordpress_git_url.nil?
       run "git clone --depth 1 #{wordpress_git_url} #{shared_path}/wordpress"
-      run "cd #{shared_path}/wordpress && git fetch --tags && git checkout #{wordpress_version}"
+      run "cd #{shared_path}/wordpress && git fetch --tags && git reset --hard HEAD && git checkout #{wordpress_version}"
     end
 
     desc "Sets up shared wp-config.php"
