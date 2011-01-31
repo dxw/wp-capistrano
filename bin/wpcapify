@@ -19,6 +19,8 @@ deploy:
   base: &base
     ssh_user: deploy
     ssh_domain: example.org
+    ssh_port: 22
+    ssh_forward_agent: false
     modules:
       - shared-dirs:
         - uploads

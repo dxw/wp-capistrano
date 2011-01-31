@@ -69,6 +69,16 @@ Capistrano::Configuration.instance.load do
   set :repository, WPConfig.application.repository
   set :branch, WPConfig.application.version
 
+  # Common SSH options
+  # In case we're using a non standard port
+  set :port, WPConfig.deploy.ssh_port
+  # Set key forwarding so only need one ssh key for development and deployment
+  if WPConfig.deploy.ssh_forward_agent == 'true'
+    set :ssh_options, { :forward_agent => true }
+  end
+
+
+  set :scm, "git"
   # Everything else
   set :scm, "git"
   set :deploy_via, :remote_cache
