@@ -28,7 +28,8 @@ Capistrano::Configuration.instance.load do
 
       set :content_dirs, {'themes' => :copy,
                           'uploads' => :copy,
-                          'plugins' => :copy}
+                          'plugins' => :copy,
+                          'languages' => :copy}
 
       deploy.content_dirs_configure
 
