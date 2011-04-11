@@ -7,8 +7,12 @@ class ManifestYML
     @files = []
     y = YAML.load_file f
 
-    if y['Files']
-      @files += glob(y['Files'])
+    # Files is deprecated
+    files = %w[Files Static Executable Invisible]
+    for f in files
+      if y[f]
+        @files += glob(y[f])
+      end
     end
 
     if y['Manifests']
