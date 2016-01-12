@@ -60,7 +60,7 @@ else
   app_repo = nil
   Dir.chdir(dir) do
     f = `git remote -v 2>/dev/null`
-    f.each do |l|
+    f.each_line do |l|
       if m = l.match(/^origin\s+(.+)\s+\(fetch\)$/)
         app_repo = m[1]
       end
